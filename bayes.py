@@ -34,31 +34,26 @@ def train():
 
 
 def get_samples(X,y):
-    return  X[y == 1],X[y== 0]
-
-
-
+    return X[y == 1],X[y == 0]
 
 
 def compute_likelihood(X,y,samples):
     
     likelihood = 0
-    # TOOD iterate for every tuple
+    # TODO iterate for every tuple
     for word in X[0]:
-        word_occurences = 0
+        word_occurrences = 0
         for i in range(samples.shape[0]):
             if word in samples[i]:
-                word_occurences+=1
-        
-        likelihood += m.log((word_occurences+1)/float((samples.size + 1*2)))
-            
+                word_occurrences+=1
+        #TODO 1*M?? ask XIM
+        likelihood += m.log((word_occurrences+1)/float((samples.size + 1*2)))
+
     # Always 0.5 because of stratification??
     likelihood *= samples.size/float(y.size)
     
     return likelihood    
     
-    
-
 
 X,y = process_data()    
 X_train,X_test,y_train,y_test = split_data(X,y)
@@ -66,6 +61,6 @@ X_train,X_test,y_train,y_test = split_data(X,y)
 positives, negatives = get_samples(X_test,y_test)
 
 
-print "Likelyhood of negative: %f" % compute_likelihood(X_train,y_train,negatives)
-print "Likelyhood of positive: %f" % compute_likelihood(X_train,y_train,positives)
+print "Likelihood of negative: %f" % compute_likelihood(X_train,y_train,negatives)
+print "Likelihood of positive: %f" % compute_likelihood(X_train,y_train,positives)
     
