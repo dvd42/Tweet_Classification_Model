@@ -9,9 +9,7 @@ Created on Tue Nov 28 13:03:11 2017
 import data_preprocessing as dp
 import train_evaluate as te
 import runtime_parser as rp
-import time as t
 
-start = t.time()
 print "Running model with:\nk = %d" % rp.k
 
 X,y = dp.process_data()
@@ -37,6 +35,4 @@ for train_index, test_index in skf.split(X,y):
     
 
 te.evaluate(accuracy,precision,recall,f_score)
-
-print "Time: %.2fs" % (t.time() - start)  
 
