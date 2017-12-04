@@ -20,4 +20,4 @@ def process_data():
 
 def split_data(X,y,n_splits):
     
-    return StratifiedKFold(n_splits)
+    return StratifiedKFold(n_splits,shuffle=True)

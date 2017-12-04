@@ -33,7 +33,7 @@ def train(X_train,y_train):
                 table[word][1] += 1
                 negatives += 1
                 
-    return table,positives,negatives
+    return table,positives,negatives #TODO 
 
 
 
@@ -61,28 +61,29 @@ def evaluate(accuracy,precision,recall,f_score):
         
 def compute_likelihood(X_test,y_test,table,positives,negatives):
     
-    y_pred = np.ones((y_test.shape))
+    y_pred = np.zeros((y_test.shape))
     likelihood_pos = 0
     likelihood_neg = 0
-    
+    n_words = len(table)
     
     
     for i in range(X_test.size):
         for word in X_test[i].split():
             if word in table:
-                likelihood_pos += m.log((table[word][0]+1)/float(table[word][0] + table[word][1]  + 1*2))
-                likelihood_neg += m.log((table[word][1] + 1)/float(table[word][1] + table[word][0] + 1*2))
+                likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
+                likelihood_neg += m.log((table[word][1] + 1)/float(negatives + 1*n_words))
                 
             else:
-                 likelihood_pos +=  m.log(1/float(1*2))
-                 likelihood_neg += m.log(1/float(1*2))
+                 likelihood_pos +=  m.log(1/float(positives + 1*n_words))
+                 likelihood_neg += m.log(1/float(negatives + 1*n_words))
             
-        likelihood_pos *= positives/float(positives + negatives)
-        likelihood_neg *= negatives/float(positives + negatives)
+        likelihood_pos += m.log(0.52)
+        likelihood_neg += m.log(0.48)
         
           
-        if likelihood_neg > likelihood_pos: 
-            y_pred[i] = 0 
+        if likelihood_neg < likelihood_pos: 
+            y_pred[i] = 1
+    
     
     
     return accuracy_score(y_test,y_pred),precision_score(y_test,y_pred),recall_score(y_test,y_pred),f1_score(y_test,y_pred)
