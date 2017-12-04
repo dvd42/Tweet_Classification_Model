@@ -18,9 +18,7 @@ def train(X_train,y_train):
     positives = 0
     negatives = 0
     table = {}
-    
-        
-    
+
     for i in range(X_train.size):
         for word in X_train[i].split():
             if word not in table:
@@ -33,7 +31,7 @@ def train(X_train,y_train):
                 table[word][1] += 1
                 negatives += 1
                 
-    return table,positives,negatives #TODO 
+    return table,positives,negatives
 
 
 
@@ -59,28 +57,31 @@ def evaluate(accuracy,precision,recall,f_score):
         
         
         
-def compute_likelihood(X_test,y_test,table,positives,negatives):
+def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets):
     
     y_pred = np.zeros((y_test.shape))
-    likelihood_pos = 0
-    likelihood_neg = 0
+
+    #TODO define limited-length dict
+
     n_words = len(table)
     
     
     for i in range(X_test.size):
+        likelihood_pos = 0
+        likelihood_neg = 0
         for word in X_test[i].split():
             if word in table:
                 likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
-                likelihood_neg += m.log((table[word][1] + 1)/float(negatives + 1*n_words))
+                likelihood_neg += m.log((table[word][1]+1)/float(negatives + 1*n_words))
                 
             else:
                  likelihood_pos +=  m.log(1/float(positives + 1*n_words))
                  likelihood_neg += m.log(1/float(negatives + 1*n_words))
-            
-        likelihood_pos += m.log(0.52)
-        likelihood_neg += m.log(0.48)
-        
-          
+
+        likelihood_pos += m.log(p_tweets/float(p_tweets + n_tweets))
+        likelihood_neg += m.log(n_tweets/float(p_tweets + n_tweets))
+
+
         if likelihood_neg < likelihood_pos: 
             y_pred[i] = 1
     

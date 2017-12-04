@@ -24,5 +24,5 @@ def create_dir():
 
 def store_results(path,accuracy,precision,recall,f_score):
     
-    print("Running model with:\nk = %d\n\nAccuracy: %.2f\nPrecsion: %.2f\nRecall: %.2f\nf1_score: %.2f\n\n " 
+    print("Running model with:\nk = %d\n\nAccuracy: %.2f\nPrecision: %.2f\nRecall: %.2f\nf1_score: %.2f\n\n "
           % (rp.k,accuracy,precision,recall,f_score),file=open(path + "/Results.txt", "a+"))
