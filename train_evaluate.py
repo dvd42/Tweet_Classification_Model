@@ -124,9 +124,6 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
     :return: accuracy, precision,recall,f1_score
     """
 
-    print p_tweets
-    print n_tweets
-
     start = t.time()
 
     y_pred = np.zeros((y_test.shape))
