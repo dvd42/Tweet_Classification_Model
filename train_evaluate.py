@@ -9,34 +9,85 @@ Created on Fri Dec  1 15:01:30 2017
 from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
 import math as m
 import numpy as np
+from collections import OrderedDict
+import time as t
 
 import runtime_parser as rp
 import file_writer as fw
 
+
+# Builds the joint distribution table
 def train(X_train,y_train):
+    """
+    :param X_train: tweets in training set 
+    :type 1D numpy array
+    :param y_train: classes in training set
+    :type 1D numpy array
+    :return: how many times each word appears in positives and negatives tweets,number of positives words
+             number of negatives words   
+    :rtype dict key:word value: [total appearances,positive appearances,negative appearances],int,int
+    """
+
+    start = t.time()
     
     positives = 0
     negatives = 0
-    table = {}
-
+    table = OrderedDict()
+    
     for i in range(X_train.size):
         for word in X_train[i].split():
             if word not in table:
-                table[word] = [0,0]
+                table[word] = [0,0,0]
                 
             if y_train[i] == 1:
-                table[word][0] += 1
+                table[word][1] += 1
                 positives += 1
             else:
-                table[word][1] += 1
+                table[word][2] += 1
                 negatives += 1
-                
-    return table,positives,negatives
+            
+            table[word][0] +=1
+            
+            
+    new_table = table
 
 
-
-def evaluate(accuracy,precision,recall,f_score):
+    # Reduce dictionary size if length has been specified
+    if rp.w != "m":
+        new_table = {}
+       
+        # Keep only the m most frequent words
+        table = sorted(table.iteritems(), key=lambda (k,v): (v,k),reverse=True)
+        table = table[:int(rp.w)]
+        for key,value in table:
+            new_table[key] = value
+            
+                 
+        # Recalculate amount of positives and negatives appearances
+        positives = 0
+        negatives = 0
+        for key in new_table:
+            positives += new_table[key][1]
+            negatives += new_table[key][2]
     
+    
+    print "Training Time: %.2f" % (t.time() - start)
+    
+    return new_table,positives,negatives
+
+
+# Prints the metrics or stores them in wd
+def evaluate(accuracy,precision,recall,f_score):
+
+    """
+    :param accuracy: list with the accuracy values of each training iteration
+    :param precision: list with the precision values of each training iteration
+    :param recall: list with the recall values of each training iteration
+    :param f_score: list with the f_score values of each training iteration
+    
+    """
+
+
     accuracy = sum(accuracy)/len(accuracy)
     precision = sum(precision)/len(precision)
     recall = sum(recall)/len(recall)
@@ -49,19 +100,36 @@ def evaluate(accuracy,precision,recall,f_score):
         print "Recall: %.2f " % recall
         print "f1_score: %.2f " % f_score
         
-
+        
     else:
         path = fw.create_dir()
         fw.store_results(path,accuracy,precision,recall,f_score)
         
         
         
-        
+# Classifies tweets into positives or negatives
 def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets):
-    
-    y_pred = np.zeros((y_test.shape))
 
-    #TODO define limited-length dict
+    """
+    :param X_test: tweets in the test set
+    :type 1D numpy array
+    :param y_test: class of each tweet
+    :type 1D numpy array with 0 or 1 
+    :param table: how many times each word appears in positives and negatives tweets
+    :type dict key:word value: [total appearances,positive appearances,negative appearances]
+    :param positives: number of positives words
+    :param negatives: number of negatives words
+    :param p_tweets: number of positives tweets
+    :param n_tweets: number of negatives tweets
+    :return: accuracy, precision,recall,f1_score
+    """
+
+    print p_tweets
+    print n_tweets
+
+    start = t.time()
+
+    y_pred = np.zeros((y_test.shape))
 
     n_words = len(table)
     
@@ -69,10 +137,12 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
     for i in range(X_test.size):
         likelihood_pos = 0
         likelihood_neg = 0
+
+        # MAP negatives and positives
         for word in X_test[i].split():
             if word in table:
-                likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
-                likelihood_neg += m.log((table[word][1]+1)/float(negatives + 1*n_words))
+                likelihood_pos += m.log((table[word][1]+1)/float(positives + 1*n_words))
+                likelihood_neg += m.log((table[word][2]+1)/float(negatives + 1*n_words))
                 
             else:
                  likelihood_pos +=  m.log(1/float(positives + 1*n_words))
@@ -86,6 +156,7 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
             y_pred[i] = 1
     
     
-    
+    print "Testing Time: %.2f\n" % (t.time() - start)
+
     return accuracy_score(y_test,y_pred),precision_score(y_test,y_pred),recall_score(y_test,y_pred),f1_score(y_test,y_pred)
     

@@ -9,15 +9,29 @@ from sklearn.model_selection import StratifiedKFold
 import pandas as pd
 
 
-def process_data():
-    dataset = pd.read_csv("FinalStemmedSentimentAnalysisDataset.csv",sep=';')
+def process_data(data):
+
+    """
+    :param data: path to the csv file holding the data
+    :return: tweets,classes
+    :rtype 1D numpy_array,1D numpy_array
+    """
+
+    dataset = pd.read_csv(data,sep=';')
     dataset = dataset.dropna()
     X = dataset.iloc[:,1].values
     y = dataset.iloc[:,3].values
 
-    return X,y
 
+    return X,y
+    
 
 def split_data(X,y,n_splits):
+    """
     
+    :param X: tweets 
+    :param y: classes
+    :param n_splits: number of splits for the k-fold
+    :return: k-fold iterator
+    """
     return StratifiedKFold(n_splits,shuffle=True)
