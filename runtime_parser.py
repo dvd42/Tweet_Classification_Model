@@ -13,7 +13,7 @@ def process_runtime_arguments():
     """
     :return: list with runtime parameters
     """
-
+    
     if len(sys.argv) < 2 or sys.argv[1] == "--help":
         print "Usage: main.py, data-set.csv"
         print "-k number of splits for the k-fold cross_validation method"

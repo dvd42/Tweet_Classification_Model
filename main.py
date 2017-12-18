@@ -8,4 +8,5 @@ Created on Tue Dec  5 16:48:33 2017
 
 import bayes
 
-bayes.test()
+#bayes.test()
+bayes.validate()
