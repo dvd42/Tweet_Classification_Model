@@ -11,7 +11,6 @@ import math as m
 import numpy as np
 from collections import OrderedDict
 
-
 import runtime_parser as rp
 import file_writer as fw
 
@@ -32,8 +31,11 @@ def train(X_train,y_train):
     negatives = 0
     table = OrderedDict()
     
+    print "The model is learning\n"
+
     for i in range(X_train.size):
         for word in X_train[i].split():
+
             if word not in table:
                 table[word] = [0,0]
                 
@@ -120,7 +122,9 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
     y_pred = np.zeros((y_test.shape))
 
     n_words = len(table)
-    
+        
+    in_table = 0
+    not_in_table = 0
     
     for i in range(X_test.size):
         likelihood_pos = 0
@@ -129,12 +133,14 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
         # MAP negatives and positives using laplace smoothing
         for word in X_test[i].split():
             if word in table:
+                in_table += 1
                 likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
                 likelihood_neg += m.log((table[word][1]+1)/float(negatives + 1*n_words))
                 
             else:
-                 likelihood_pos +=  m.log(1/float(positives + 1*n_words))
-                 likelihood_neg += m.log(1/float(negatives + 1*n_words))
+                not_in_table += 1
+                likelihood_pos +=  m.log(1/float(positives + 1*n_words))
+                likelihood_neg += m.log(1/float(negatives + 1*n_words))
 
         likelihood_pos += m.log(p_tweets/float(p_tweets + n_tweets))
         likelihood_neg += m.log(n_tweets/float(p_tweets + n_tweets))
@@ -143,6 +149,8 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
         if likelihood_neg < likelihood_pos: 
             y_pred[i] = 1
     
+    print(in_table)
+    print(not_in_table)
 
     return accuracy_score(y_test,y_pred),precision_score(y_test,y_pred),recall_score(y_test,y_pred),f1_score(y_test,y_pred)
 

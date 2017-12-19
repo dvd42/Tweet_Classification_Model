@@ -24,9 +24,9 @@ def create_dirs():
     if not os.path.exists("table"):
     	os.makedirs("table")
 
-
-    if not os.path.exists("tweets"):
-    	os.makedirs("tweets")
+    if rp.test:
+    	if not os.path.exists(rp.target):
+    		os.makedirs(rp.target)
 
 
 

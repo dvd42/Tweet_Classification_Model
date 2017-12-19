@@ -25,10 +25,12 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
         for word in tweets[i].split():
             word = st.stem(word.decode('utf-8'))
             if word in table:
+                in_table += 1
                 likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
                 likelihood_neg += m.log((table[word][1]+1)/float(negatives + 1*n_words))
                 
             else:
+                not_in_table += 1
                 likelihood_pos +=  m.log(1/float(positives + 1*n_words))
                 likelihood_neg += m.log(1/float(negatives + 1*n_words))
 
@@ -41,5 +43,7 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
 
     prediction = np.bincount(y_pred)
 
+    print "Known words: %d" % in_table
+    print "Unknown words %d\n" % not_in_table
 
-    return 0 if prediction[0] > prediction[1] else 1,prediction[0],prediction[1]
+    return 0 if prediction[0] > prediction[1] else 1,prediction[1],prediction[0]

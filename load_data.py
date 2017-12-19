@@ -1,4 +1,6 @@
 import pandas as pd
+from collections import defaultdict
+
 
 
 def load_table(path):
@@ -10,7 +12,12 @@ def load_table(path):
 	p_tweets = data_set.iloc[0,3]
 	n_tweets = data_set.iloc[0,4]
 	
-	return words,positives,negatives,p_tweets,n_tweets
+	table = defaultdict(list)
+	for i in range(len(words)):
+	    table[words[i]] = [positives[i],negatives[i]]
+
+
+	return table,sum(positives),sum(negatives),p_tweets,n_tweets
 
 
 

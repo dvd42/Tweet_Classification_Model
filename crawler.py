@@ -2,65 +2,55 @@ from splinter import Browser
 import csv
 
 
-def go_spider_go(tweetsOf, retweetsOfUser = True,dataFileExtension='.csv', 
-    browserType='phantomjs', filename=None, encodeText='utf-8', howManyTweets = 100):
+def go_spider_go(target, retweetsOfUser=True,browserType='phantomjs', filename=None, encodeText='utf-8', number_of_tweets=100):
     id_list_of_tweets = 'stream-items-id'
     css_of_tweet = '.tweet'
     css_of_user_in_tweet = '.username'
     css_of_text_in_tweet = '.js-tweet-text-container'
 
-    completeUrl, filename, name, user = filterInput(filename, dataFileExtension, tweetsOf, encodeText)
-    browser = Browser(browserType)                                                      #Open Browser
-    browser.visit(completeUrl)                                                          #Visit TwitterURL
+    completeUrl, filename, target, user = filterInput(filename,target, encodeText)
+    browser = Browser(browserType)                                                     
+    browser.visit(completeUrl)                                                        
 
-    tweetNum = 0
     tweets = {}
-   
-    while len(tweets) < howManyTweets:
+    while len(tweets) < number_of_tweets:
         browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
         for tweet in browser.find_by_id(id_list_of_tweets)[0].find_by_css(css_of_tweet):
-            tweets[tweet['data-tweet-id']] = tweet
 
-        print len(tweets)
+            # TODO: get only tweets in english
+            # TODO: refresh page when limit is hit
+            # TODO: break when no more tweets can be found
+            #FIXME: phantomjs does not scrap hashtags properly
+
+            if user: 
+                element = tweet.find_by_css(css_of_user_in_tweet)[0].text[1:].encode(encodeText)
+            else:
+                element = tweet.find_by_css(css_of_text_in_tweet).text
+
+            if target in element:
+                tweets[tweet['data-tweet-id']] = tweet
 
 
-    print 'Number of Tweets Loaded:', len(tweets)
+    print "Number of loaded Tweets: %d\n" % len(tweets)
+
     
     with open(filename, 'w') as myfile:
         wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
         wr.writerow(["Tweets"])
 
-        if user:
-            for tweet in tweets.values():                                                   #Foreach tweet save the data we want.
-                tweetUser = tweet.find_by_css(css_of_user_in_tweet)[0].text[1:].encode(encodeText)
-                if not retweetsOfUser:
-                    if name == tweetUser:
-                        tweetData = tweet.find_by_css(css_of_text_in_tweet).text
-                        wr.writerow([tweetData.encode(encodeText)])
-                        tweetNum += 1
-                else:
-                    tweetData = tweet.find_by_css(css_of_text_in_tweet).text
-                    wr.writerow([tweetData.encode(encodeText)])
-                    tweetNum += 1
-        else:
+        for tweet in tweets.values():                                                
+            wr.writerow([tweet.find_by_css(css_of_text_in_tweet).text.encode(encodeText)])
+            
+            
 
-            for tweet in tweets:
-                tweetUser = tweet.find_by_css(css_of_user_in_tweet)[0].text[1:].encode(encodeText)
-                tweetText = tweet.find_by_css(css_of_text_in_tweet).text
-                if name in tweetText:
-                    tweetData = tweet.find_by_css(css_of_text_in_tweet).text
-                    wr.writerow([tweetData])
-                    tweetNum += 1
-
-    browser.quit()  # Close the browser.
-    print 'Related to ' + name + ': ' + str(tweetNum)
+    browser.quit()
 
 
 
-def filterInput(filename,dataFileExtension, tweetsOf, encodeText):
+def filterInput(filename,target, encodeText):
     user = False
     completeUrl = 'https://twitter.com/'
-    arg0 = tweetsOf.encode(encodeText)
+    arg0 = target.encode(encodeText)
     name = str(arg0).replace('#','').replace('@','')
 
     if '#' in arg0:                             #Check if Its a Hashtag.
@@ -70,9 +60,7 @@ def filterInput(filename,dataFileExtension, tweetsOf, encodeText):
         user = True
 
     if filename == None:                        #If no filename is given
-        filename = name + 'Tweets' + dataFileExtension
-    else:
-        filename += dataFileExtension
+        filename = name + 'tweets'
 
     return completeUrl, filename, name, user
 

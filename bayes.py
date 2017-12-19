@@ -11,7 +11,6 @@ import train_evaluate as te
 import runtime_parser as rp
 import sys
 import os
-from collections import defaultdict
 
 
 import file_writer as fw
@@ -63,40 +62,23 @@ def test():
 
     if not os.path.exists("table/table.csv"):
         X,y = dp.process_data(rp.data)
-        table,positives,negatives = te.train(X,y)
+        table,_,_ = te.train(X,y)
         fw.store_table(table,y[y == 1].size,y[y == 0].size)
     
-    
-    # TODO: load_tweets
-    # TODO: lancaster stemmer
+   
 
-    table = defaultdict(list)
-    words,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
+    table,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
 
+    #Scrap Tweets and store them in csv file
+    crawler.go_spider_go(rp.target,filename= rp.target + "/tweets.csv",browserType=rp.browser,retweetsOfUser=True,number_of_tweets=100)
 
-    for i in range(len(words)):
-        table[words[i]] = [positives[i],negatives[i]]
+    tweets = ld.load_tweets(rp.target +"/tweets.csv")
 
-    target = '@JoseGarbayo'
-
-    #Scrap Tweets
-    crawler.go_spider_go(target,filename="tweets/tweets",browserType='phantomjs',retweetsOfUser=True,howManyTweets=100)
-
-    tweets = ld.load_tweets("tweets/tweets.csv")
-
-    group,n_tweets,p_tweets = classifier.classify(tweets,table,sum(positives),sum(negatives),p_tweets,n_tweets)
-
-    group = "Positive" if group  else "Negative"
+    group,p_class,n_class = classifier.classify(tweets,table,positives,negatives,p_tweets,n_tweets)
 
 
-    if '#' in target:
-        print target + " is a " + group + " Hashtag"
+    return group,p_class/float(p_class + n_class)
 
-    else:
-        print target + " is a " + group + " User" 
-
-    print "Positive Tweets: %d" % p_tweets
-    print "Negative Tweets: %d" % n_tweets
 
 
 
