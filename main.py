@@ -19,6 +19,5 @@ def main():
 		print "%s Positive Ratio: %.2f\n" % (rp.target,positive_ratio)
 
 
-
 if __name__ == "__main__":
-	main()
+	main()	

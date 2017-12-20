@@ -8,23 +8,21 @@ import runtime_parser as rp
 def create_dirs():
 	"""Create directories to store results"""
 
-
-    if not os.path.exists("metrics"):
-        os.makedirs("metrics")
+	if not os.path.exists("metrics"):
+		os.makedirs("metrics")
    
+	if not os.path.exists("table"):
+		os.makedirs("table")
 
-    if not os.path.exists("table"):
-    	os.makedirs("table")
-
-    if rp.test:
-    	if not os.path.exists(rp.target):
-    		os.makedirs(rp.target)
+	if rp.test:
+		if not os.path.exists(rp.target):
+			os.makedirs(rp.target)
 
 
 
 def store_results(path,accuracy,precision,recall,f_score):
 	"""Store the results in .txt file  
-	
+
 	Args:
 		path: (:obj: 'str'): The path were the results will be stored
 		accuracy: (float): Accuracy Score
@@ -33,8 +31,7 @@ def store_results(path,accuracy,precision,recall,f_score):
 		f_score: (float): f1_score
 	"""
 
-    print("Running model with:\nK = %d\n%s samples\nMax_words: %s\n\nAccuracy: %.2f\nPrecision: %.2f\nRecall: %.2f\nf1_score: %.2f\n\n"
-          % (rp.k,rp.size,rp.w,accuracy,precision,recall,f_score),file=open(path + "/results.txt", "a+"))
+	print("Running model with:\nK = %d\n%s samples\nMax_words: %s\n\nAccuracy: %.2f\nPrecision: %.2f\nRecall: %.2f\nf1_score: %.2f\n\n" % (rp.k,rp.size,rp.w,accuracy,precision,recall,f_score),file=open(path + "/results.txt", "a+"))
 
 
 
