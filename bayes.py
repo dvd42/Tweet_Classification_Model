@@ -65,12 +65,10 @@ def test():
         table,_,_ = te.train(X,y)
         fw.store_table(table,y[y == 1].size,y[y == 0].size)
     
-   
-
     table,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
-
+    filename = rp.target + "/tweets.csv"
     #Scrap Tweets and store them in csv file
-    crawler.go_spider_go(rp.target,filename= rp.target + "/tweets.csv",browserType=rp.browser,retweetsOfUser=True,number_of_tweets=100)
+    crawler.go_spider_go(filename,rp.target,browser=rp.browser,retweets=rp.rt,scroll_pause=float(rp.sp))
 
     tweets = ld.load_tweets(rp.target +"/tweets.csv")
 

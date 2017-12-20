@@ -42,3 +42,6 @@ w = argvs[argvs.index("-w") + 1] if "-w" in argvs else "m"
 target = argvs[argvs.index("-target") + 1] if "-target" in argvs else ""
 test = True if "-target" in argvs else False
 browser = argvs[argvs.index("-bw") + 1] if "-bw" in argvs else "phantomjs"
+sp = argvs[argvs.index("-sp") + 1] if "-sp" in argvs else "0.5"
+rt = True if "-rt" in argvs else False
+
