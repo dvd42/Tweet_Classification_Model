@@ -1,7 +1,5 @@
 import math as m
 import numpy as np
-import time as t
-
 
 from nltk.stem.lancaster import LancasterStemmer
 
@@ -14,6 +12,7 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
     n_words = len(table)
     in_table = 0
     not_in_table = 0
+
 
     y_pred = np.zeros(len(tweets)).astype('int64')
 
@@ -38,6 +37,8 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
         likelihood_neg += m.log(n_tweets/float(p_tweets + n_tweets))
 
 
+
+        # Classify as positive or negative
         if likelihood_neg < likelihood_pos: 
             y_pred[i] = 1
 
@@ -46,4 +47,4 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
     print "Known words: %d" % in_table
     print "Unknown words %d\n" % not_in_table
 
-    return 0 if prediction[0] > prediction[1] else 1,prediction[1],prediction[0]
+    return prediction[1],prediction[0]

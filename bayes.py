@@ -15,8 +15,9 @@ import os
 
 import file_writer as fw
 import load_data as ld
-import crawler
 import classifier
+import crawler
+
 
 # Trains and validates the model
 def validate():
@@ -42,7 +43,7 @@ def validate():
         y_train,y_test = y[train_index][:size],y[test_index]	
 
         table,positives,negatives = te.train(X_train,y_train)
-    
+
         a,p,r,f = te.compute_likelihood(X_test,y_test,table,positives,negatives,y_train[y_train == 1].size,y_train[y_train == 0].size)
 
         # Store metrics for each split
@@ -50,10 +51,8 @@ def validate():
         precision.append(p)
         recall.append(r)
         f_score.append(f)
-    
+
     te.evaluate(accuracy,precision,recall,f_score)
-
-
 
 
 def test():
@@ -68,14 +67,14 @@ def test():
     table,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
     filename = rp.target + "/tweets.csv"
     #Scrap Tweets and store them in csv file
-    crawler.go_spider_go(filename,rp.target,browser=rp.browser,retweets=rp.rt,scroll_pause=float(rp.sp))
+    crawler.go_spider_go(filename,rp.target,retweets=rp.rt,scroll_pause=float(rp.sp),headless=rp.headless)
 
     tweets = ld.load_tweets(rp.target +"/tweets.csv")
 
-    group,p_class,n_class = classifier.classify(tweets,table,positives,negatives,p_tweets,n_tweets)
+    p_class,n_class = classifier.classify(tweets,table,positives,negatives,p_tweets,n_tweets)
 
 
-    return group,p_class/float(p_class + n_class)
+    return p_class/float(p_class + n_class)
 
 
 

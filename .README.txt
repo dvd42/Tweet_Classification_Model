@@ -1,0 +1,29 @@
+Requirements:
+	Python 2.7
+    	firefox browser: sudo apt-get install firefox
+	splinter: pip install splinter
+	geckodriver: https://github.com/mozilla/geckodriver
+	lang_detect: pip install langdetect
+
+Usage for model validation: 
+
+main.py data-set.csv [-k] [--size] [-w] [-v] [--nohead]
+	-k number of splits for the k-fold cross_validation method
+    	--size size of the training set (in case you want to train with less samples (if you dont want to reduce the training set use --size n)
+    	-w maximun number of words you want in the dictionary (if you dont want a limited number use -w m)
+    	-v will show results on the standard output (if this is not entered the results will be stored in the wd)
+    	--nohead to use web crawler on headless version 
+
+Default parameters: -k 5 -w m --size n
+
+Usage for model testing:
+
+main.py data-set.csv --target [-sp] [--nohead] [-rt]
+    
+    --target the user or hashtag you want to analize (e.g: @Avengers (user) or Avengers (hashtag)
+    -sp time interval in seconds between crawler scrolls (the slower your internet connection the higher this value must be)
+    
+    --nohead enter this parameter if you dont want the crawler to open your browser
+    -rt will analize the users's retweets as well (this has no effects if you are analyzing a hashtag) 
+
+Default parameters: -sp 0.5 

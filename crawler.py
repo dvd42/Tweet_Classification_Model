@@ -2,17 +2,23 @@ from splinter import Browser
 import csv
 import time as t
 import sys
+from langdetect import detect,lang_detect_exception
 
-def go_spider_go(filename,target, retweets=True,browser='phantomjs', encode_text='utf-8',scroll_pause=0.5):
+def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.5,headless=False):
+
+    """[summary]
+    
+    [description]
+    """
+
     tweets_id = 'stream-items-id'
     tweet_css = '.tweet'
     user_css = '.username'
     text_css = '.js-tweet-text-container'
     tweet_id = 'data-tweet-id'
-    end = 'timeline'
 
-    url,user = filterInput(filename,target, encode_text)
-    browser = Browser(browser)                                                     
+    url,user = filterInput(filename,target, encoding)
+    browser = Browser('firefox',headless=headless)                                                     
     browser.visit(url)                                                        
 
     tweets = {}
@@ -40,13 +46,10 @@ def go_spider_go(filename,target, retweets=True,browser='phantomjs', encode_text
     print "Number of loaded tweets: %d" % len(loaded_tweets)
 
     for tweet in loaded_tweets:
-
-        # TODO: get only tweets in english
-        # FIXME: phantomjs does not scrap hashtags properly
         
         if not retweets and user:
-            content = tweet.find_by_css(user_css)[0].text.encode(encode_text)
-            if target in content:
+            content = tweet.find_by_css(user_css)[0].text.encode(encoding)
+            if target.lower() in content.lower():
                 tweets[tweet[tweet_id]] = tweet
         else:
             tweets[tweet[tweet_id]] = tweet
@@ -55,22 +58,50 @@ def go_spider_go(filename,target, retweets=True,browser='phantomjs', encode_text
         print "This user has no tweets"
         sys.exit(1)
 
-    print "Number of related tweets: %d\n" % len(tweets)
+    print "Number of related tweets: %d" % len(tweets)
 
-
+    # Store tweets in csv file
     with open(filename, 'w') as myfile:
         wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
         wr.writerow(["Tweets"])
+        rows = 0
 
         for tweet in tweets.values():
-            wr.writerow([tweet.find_by_css(text_css).text.encode(encode_text)])
-    
-    browser.quit()       
+            text = tweet.find_by_css(text_css).text            
+            if in_english(text):
+                rows += 1
+                wr.writerow([text.encode(encoding)])
+           
 
-def filterInput(filename,target, encode_text):
+                    
+    print "Number of tweets in english: %d\n" % rows
+                
+    
+    browser.quit()
+
+def in_english(text):
+    
+    """
+    Checks if a tweet is in english
+        
+    Parameters:
+        text {[string]} -- [tweet text]
+    
+    Returns:
+        [boolean] -- [True if tweet text is in English False otherwise]
+    """
+
+    try:
+        return detect(text) == 'en'
+    except lang_detect_exception.LangDetectException as e:
+        return False
+    
+
+def filterInput(filename,target, encoding):
+
     user = False
     url = 'https://twitter.com/'
-    target = target.encode(encode_text)
+    target = target.encode(encoding)
 
     if '@' not in target:                            
         url += 'hashtag/' + target 

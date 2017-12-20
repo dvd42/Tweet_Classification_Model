@@ -35,7 +35,6 @@ def train(X_train,y_train):
 
     for i in range(X_train.size):
         for word in X_train[i].split():
-
             if word not in table:
                 table[word] = [0,0]
                 
@@ -123,9 +122,6 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
 
     n_words = len(table)
         
-    in_table = 0
-    not_in_table = 0
-    
     for i in range(X_test.size):
         likelihood_pos = 0
         likelihood_neg = 0
@@ -133,12 +129,10 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
         # MAP negatives and positives using laplace smoothing
         for word in X_test[i].split():
             if word in table:
-                in_table += 1
                 likelihood_pos += m.log((table[word][0]+1)/float(positives + 1*n_words))
                 likelihood_neg += m.log((table[word][1]+1)/float(negatives + 1*n_words))
                 
             else:
-                not_in_table += 1
                 likelihood_pos +=  m.log(1/float(positives + 1*n_words))
                 likelihood_neg += m.log(1/float(negatives + 1*n_words))
 
@@ -148,10 +142,7 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
 
         if likelihood_neg < likelihood_pos: 
             y_pred[i] = 1
-    
-    print(in_table)
-    print(not_in_table)
-
+   
     return accuracy_score(y_test,y_pred),precision_score(y_test,y_pred),recall_score(y_test,y_pred),f1_score(y_test,y_pred)
 
 
