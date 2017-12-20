@@ -1,11 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 28 13:03:11 2017
-
-@author: diego
-"""
-
 import data_preprocessing as dp
 import train_evaluate as te
 import runtime_parser as rp
@@ -21,6 +13,7 @@ import crawler
 
 # Trains and validates the model
 def validate():
+    """Validates the model"""
 
     fw.create_dirs()
 
@@ -52,10 +45,11 @@ def validate():
         recall.append(r)
         f_score.append(f)
 
-    te.evaluate(accuracy,precision,recall,f_score)
+    te.evaluate(accuracy,precision,recall,f_score,rp.verbose)
 
 
 def test():
+    """Tests the model with new tweets"""
 
     fw.create_dirs()
 
@@ -66,6 +60,7 @@ def test():
     
     table,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
     filename = rp.target + "/tweets.csv"
+
     #Scrap Tweets and store them in csv file
     crawler.go_spider_go(filename,rp.target,retweets=rp.rt,scroll_pause=float(rp.sp),headless=rp.headless)
 

@@ -1,11 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  1 15:01:30 2017
-
-@author: diego
-"""
-
 from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
 import math as m
 import numpy as np
@@ -15,17 +7,21 @@ import runtime_parser as rp
 import file_writer as fw
 
 
-# Builds the joint distribution table
 def train(X_train,y_train):
+    """Builds the joint distribution table
+    
+    Args:
+        X_train: (:obj: 'str numpy array'): Tweets for training
+        y_train: (:obj: 'int numpy array'): Tweet class (0,1)
+    
+    Returns:
+        new_table (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])
+        
+        positives (int): All positive word appearances
+        negatives (int): All negative word appearances
+        
     """
-    :param X_train: tweets in training set 
-    :type 1D numpy array
-    :param y_train: classes in training set
-    :type 1D numpy array
-    :return: how many times each word appears in positives and negatives tweets,number of positives words
-             number of negatives words   
-    :rtype dict key:word value: [positive appearances,negative appearances],int,int
-    """
+
 
     positives = 0
     negatives = 0
@@ -70,25 +66,25 @@ def train(X_train,y_train):
     
     return new_table,positives,negatives
 
+def evaluate(accuracy,precision,recall,f_score,verbose=True):
 
-# Prints the metrics or stores them in wd
-def evaluate(accuracy,precision,recall,f_score):
+    """Calculate the average metrics
 
+    Args:  
+        accuracy: (:obj: 'list'): The accuracy value of each k-fold iteration
+        precision: (:obj: 'list'): The precision value of each k-fold iteration
+        recall: (:obj: 'list'): The recall value of each k-fold iteration
+        f1_score: (:obj: 'list'): The f1_score value of each k-fold iteration
+        verbose: (bool): Whether to show the results or store them in wd
     """
-    :param accuracy: list with the accuracy values of each training iteration
-    :param precision: list with the precision values of each training iteration
-    :param recall: list with the recall values of each training iteration
-    :param f_score: list with the f_score values of each training iteration
     
-    """
-
     accuracy = sum(accuracy)/len(accuracy)
     precision = sum(precision)/len(precision)
     recall = sum(recall)/len(recall)
     f_score = sum(f_score)/len(f_score)    
 
     
-    if rp.verbose:
+    if verbose:
         print "Accuracy: %.2f " % accuracy
         print "Precision: %.2f " % precision
         print "Recall: %.2f " % recall
@@ -101,21 +97,26 @@ def evaluate(accuracy,precision,recall,f_score):
         
         
         
-# Classifies tweets into positives or negatives
-def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets):
 
-    """
-    :param X_test: tweets in the test set
-    :type 1D numpy array
-    :param y_test: class of each tweet
-    :type 1D numpy array with 0 or 1 
-    :param table: how many times each word appears in positives and negatives tweets
-    :type dict key:word value: [positive appearances,negative appearances]
-    :param positives: number of positives words
-    :param negatives: number of negatives words
-    :param p_tweets: number of positives tweets
-    :param n_tweets: number of negatives tweets
-    :return: accuracy, precision,recall,f1_score
+def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets):
+    """Classifies tweets into positives or negatives
+    
+     Args:
+        X_test: (:obj: 'str numpy array'): Tweets for validating
+        y_test: (:obj: 'int numpy array'): Tweet class (0,1)
+        table: (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])
+        positives: (int): All positive word appearances
+        negatives: (int): All negative word appearances
+        p_tweets: (int): Positives tweets
+        n_tweets: (int): Negatives tweets
+
+
+    Returns:
+        float: accuracy score
+        float: precision score
+        float: recall score
+        float: f1_score score
+            
     """
 
     y_pred = np.zeros((y_test.shape))

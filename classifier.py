@@ -2,10 +2,19 @@ import math as m
 import numpy as np
 
 from nltk.stem.lancaster import LancasterStemmer
-
-
-# Classify user or hashtag as positive or negative
+ 
 def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
+    """Classify user or hashtag as positive or negative
+    
+    Args:
+        tweets: (:obj: 'str numpy array'): Tweets
+        table: (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])
+        positives: (int): positive word appearances
+        negatives: (int): negative word appearances
+        p_tweets: (int): Positives tweets
+        n_tweets: (int): Negatives tweets
+    """
+
 
     st = LancasterStemmer()
 

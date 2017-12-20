@@ -2,8 +2,19 @@ import pandas as pd
 from collections import defaultdict
 
 
-
 def load_table(path):
+	"""Loads the joint distribution table
+	
+	Args:
+		data: (:obj: 'str'): The path to the csv where the table is stored
+	
+	Returns:
+		table: (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])
+        (int): positive word appearances
+        (int): negative word appearances
+      	p_tweets: (int): Positives tweets
+        n_tweets: (int): Negatives tweets
+	"""	
 
 	data_set = pd.read_csv(path)
 	positives = data_set.iloc[:,1].values
@@ -22,6 +33,14 @@ def load_table(path):
 
 
 def load_tweets(path):
+	"""Loads the joint distribution table
+	
+	Args:
+		data: (:obj: 'str'): The path to the csv where the tweets is stored
+		
+	Returns:
+        tweets: (:obj: 'str numpy array'): Tweets
+	"""	
 
 	data_set = pd.read_csv(path,sep=';')
 	data_set = data_set.dropna()

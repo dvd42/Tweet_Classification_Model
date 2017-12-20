@@ -5,10 +5,15 @@ import sys
 from langdetect import detect,lang_detect_exception
 
 def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.5,headless=False):
-
-    """[summary]
+    """Runs the web crawler through Twitter
     
-    [description]
+    Args:
+        filename: (:obj: 'str'): The path to the csv where the tweets will be stored
+        target: (:obj: 'str'): The user or hashtag to get the tweets from
+        retweets: (boolean, optional): Wheter to scan for user's retweets.
+        encoding: (:obj: 'str', optional): Text encoding
+        scroll_pause: (float, optional): Time interval between web crawler scrolls
+        headless: (boolean, optional): Wheter to show the browser while crawling
     """
 
     tweets_id = 'stream-items-id'
@@ -17,7 +22,7 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
     text_css = '.js-tweet-text-container'
     tweet_id = 'data-tweet-id'
 
-    url,user = filterInput(filename,target, encoding)
+    url,user = filterInput(target, encoding)
     browser = Browser('firefox',headless=headless)                                                     
     browser.visit(url)                                                        
 
@@ -26,6 +31,8 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
     height = 0
 
     start = t.time()
+
+    #Scroll through the webpage
     while (t.time() - start) < 1000 * scroll_pause :
 
         current_height = height
@@ -45,8 +52,9 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
 
     print "Number of loaded tweets: %d" % len(loaded_tweets)
 
-    for tweet in loaded_tweets:
-        
+
+    # Filter tweets
+    for tweet in loaded_tweets:    
         if not retweets and user:
             content = tweet.find_by_css(user_css)[0].text.encode(encoding)
             if target.lower() in content.lower():
@@ -80,15 +88,13 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
     browser.quit()
 
 def in_english(text):
-    
-    """
-    Checks if a tweet is in english
+    """Checks if a tweet is in english
         
-    Parameters:
-        text {[string]} -- [tweet text]
+    Args:
+        text: (:obj: 'str'): Text in the tweet
     
     Returns:
-        [boolean] -- [True if tweet text is in English False otherwise]
+        bool: True if tweet text is in English, False otherwise
     """
 
     try:
@@ -97,7 +103,17 @@ def in_english(text):
         return False
     
 
-def filterInput(filename,target, encoding):
+def filterInput(target, encoding):
+    """Determines wheter the target is an user or a hashtag"
+
+    Args:
+        target: (:obj: 'str'): The user or hashtag to get the tweets from
+        encoding: (:obj: 'str'): Text encoding
+    
+    Returns:
+        url: (:obj: 'str'): The complete URL to get the tweets (e.g: https://twitter.com/user)
+        user: (bool): True if we are analyzing an user, False if we are analyzing a hashtag 
+    """
 
     user = False
     url = 'https://twitter.com/'

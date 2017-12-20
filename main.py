@@ -10,9 +10,9 @@ import bayes
 import runtime_parser as rp
 
 def main():
+
 	if not rp.test:
 		bayes.validate()
-
 
 	else:
 		positive_ratio = bayes.test()

@@ -1,21 +1,10 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  1 17:28:50 2017
-
-@author: diego
-"""
-
 import sys
 
-
 def process_runtime_arguments():
-    
     """Process runtime parameters
     
     Returns:
-        list containing runtime parameters
-        list
+        (:obj: 'list'): runtime parameters
     """
 
     if len(sys.argv) < 2 or sys.argv[1] == "--help":
