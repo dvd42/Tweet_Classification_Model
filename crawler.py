@@ -97,8 +97,13 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
                     
     print "Number of tweets in english: %d\n" % rows
                 
-    
+        
     browser.quit()
+
+    if rows == 0:
+        print "This user has no tweets in English"
+        sys.exit(1)
+
 
 def in_english(text):
     """Checks if a tweet is in english
