@@ -36,7 +36,6 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
     start = t.time()
 
    
-
     spinner = itertools.cycle(['[-]','[/]','[|]','[\\]'])
 
     print "Reading Tweets...",

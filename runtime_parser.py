@@ -9,7 +9,7 @@ def process_runtime_arguments():
 
     if len(sys.argv) < 2 or sys.argv[1] == "--help":
         
-        file = open(".README.txt",'r')
+        file = open(".readme.txt",'r')
         print file.read()
         sys.exit(1)
 

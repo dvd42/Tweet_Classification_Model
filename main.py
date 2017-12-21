@@ -8,10 +8,8 @@ Created on Tue Dec  5 16:48:33 2017
 
 import os
 
-import trainer
 import runtime_parser as rp
-import file_writer as fw
-import load_data as ld
+import handler
 import classifier
 import crawler
 
@@ -20,20 +18,17 @@ def main():
 
 	print '\n'
 
-	fw.create_dirs()
+	if not os.path.exists(rp.target):
+		os.makedirs(rp.target)
 
-	if not os.path.exists("table/table.csv"):
-		X,y = ld.process_data(rp.data)
-		table = trainer.train(X,y)
-		fw.store_table(table,y[y == 1].size,y[y == 0].size)
 
-	table,positives,negatives,p_tweets,n_tweets = ld.load_table("table/table.csv")
+	table,positives,negatives,p_tweets,n_tweets = handler.load_table("table/table.csv")
 	filename = rp.target + "/tweets.csv"
 
 	#Scrap Tweets and store them in csv file
 	crawler.go_spider_go(filename,rp.target,retweets=rp.rt,scroll_pause=float(rp.sp),headless=rp.headless)
 
-	tweets = ld.load_tweets(rp.target +"/tweets.csv")
+	tweets = handler.load_tweets(rp.target +"/tweets.csv")
 
 	positive_ratio,group = classifier.classify(tweets,table,positives,negatives,p_tweets,n_tweets)
 
