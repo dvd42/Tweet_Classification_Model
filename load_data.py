@@ -18,10 +18,11 @@ def load_table(path):
 
 	data_set = pd.read_csv(path)
 	positives = data_set.iloc[:,2].values
+	print positives
 	negatives = data_set.iloc[:,3].values
 	words = data_set.iloc[:,0].values
-	p_tweets = data_set.iloc[0,3]
-	n_tweets = data_set.iloc[0,4]
+	p_tweets = data_set.iloc[0,4]
+	n_tweets = data_set.iloc[0,5]
 	
 	table = defaultdict(list)
 	for i in range(len(words)):
