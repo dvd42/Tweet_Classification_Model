@@ -21,7 +21,7 @@ Usage for model testing:
 
 main.py data-set.csv --target [-sp] [--nohead] [-rt]
     
-    --target the user or hashtag you want to analize (e.g: @Avengers (user) or Avengers (hashtag)
+    --target the user or hashtag you want to analize (e.g: @Avengers for the user (@Avengers) or Avengers for the hashtag (#Avengers))
     -sp time interval in seconds between crawler scrolls (the slower your internet connection the higher this value must be)
     
     --nohead enter this parameter if you dont want the crawler to open your browser

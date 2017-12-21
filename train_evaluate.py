@@ -35,16 +35,15 @@ def train(X_train,y_train):
                 table[word] = [0,0,0]
                 
             if y_train[i] == 1:
-                table[word][1] += 1
+                table[word][0] += 1
                 positives += 1
             else:
-                table[word][2] += 1
+                table[word][1] += 1
                 negatives += 1
             
             table[word][0] += 1
             
     new_table = table
-
 
     # Reduce dictionary size if length has been specified
     if rp.w != "m":
@@ -53,6 +52,7 @@ def train(X_train,y_train):
         # Keep only the m most frequent words
         table = sorted(table.iteritems(), key=lambda (k,v): (v,k),reverse=True)
         table = table[:int(rp.w)]
+
         for key,value in table:
             new_table[key] = value
             
@@ -105,7 +105,7 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
      Args:
         X_test: (:obj: 'str numpy array'): Tweets for validating
         y_test: (:obj: 'int numpy array'): Tweet class (0,1)
-        table: (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])
+        new_table (:obj: 'dict'): Words and its total appearances and its negatives and positives appearances (e.g dict['hello']=[15,5,10])
         positives: (int): All positive word appearances
         negatives: (int): All negative word appearances
         p_tweets: (int): Positives tweets
@@ -116,14 +116,14 @@ def compute_likelihood(X_test,y_test,table,positives,negatives,p_tweets,n_tweets
         float: accuracy score
         float: precision score
         float: recall score
-        float: f1_score score
+        float: f1_score
             
     """
 
     y_pred = np.zeros((y_test.shape))
 
     n_words = len(table)
-        
+  
     for i in range(X_test.size):
         likelihood_pos = 0
         likelihood_neg = 0

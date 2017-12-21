@@ -34,15 +34,13 @@ def store_results(path,accuracy,precision,recall,f_score):
 	print("Running model with:\nK = %d\n%s samples\nMax_words: %s\n\nAccuracy: %.2f\nPrecision: %.2f\nRecall: %.2f\nf1_score: %.2f\n\n" % (rp.k,rp.size,rp.w,accuracy,precision,recall,f_score),file=open(path + "/results.txt", "a+"))
 
 
-
-
-
 def store_table(table,p_tweets,n_tweets):
 
 	"""Stores the joint distribution table in .csv file
 	
 	Args:
- 		table (:obj: 'dict'): Words and its negatives and positives appearances (e.g dict['hello']=[5,10])    
+ 		new_table (:obj: 'dict'): Words and its total appearances and its negatives and positives appearances (e.g dict['hello']=[15,5,10])
+    
     	p_tweets (int): Positive tweets
     	n_tweets (int): Negative tweets
 	"""
