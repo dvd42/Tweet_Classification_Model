@@ -3,9 +3,12 @@ import csv
 import time as t
 import sys
 from langdetect import detect,lang_detect_exception
+import itertools, sys
 
-def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.5,headless=False):
-    """Runs the web crawler through Twitter
+def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.3,headless=False):
+
+
+    """Runs the web crawler through Twitter stops when all tweets are found or 1000*scroll_pause seconds have passed
     
     Args:
         filename: (:obj: 'str'): The path to the csv where the tweets will be stored
@@ -32,8 +35,16 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
 
     start = t.time()
 
-    #Scroll through the webpage
+   
+
+    spinner = itertools.cycle(['[-]','[/]','[|]','[\\]'])
+
+    print "Reading Tweets...",
     while (t.time() - start) < 1000 * scroll_pause :
+
+        sys.stdout.write(spinner.next())
+        sys.stdout.flush()
+        sys.stdout.write('\b\b\b')
 
         current_height = height
 
@@ -49,6 +60,9 @@ def go_spider_go(filename,target, retweets=True,encoding='utf-8',scroll_pause=0.
         browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
     
     loaded_tweets = browser.find_by_id(tweets_id).find_by_css(tweet_css)
+
+    for _ in range(len("Reading Tweets...") + 3):
+        sys.stdout.write('\b')
 
     print "Number of loaded tweets: %d" % len(loaded_tweets)
 

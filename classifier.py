@@ -56,4 +56,9 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
     print "Known words: %d" % in_table
     print "Unknown words %d\n" % not_in_table
 
-    return prediction[1],prediction[0]
+    positive_ratio = prediction[1]/float(prediction[1] + prediction[0])
+
+    group = "Positive" if positive_ratio > 0.5 else "Negative" 
+
+
+    return positive_ratio,group

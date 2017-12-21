@@ -2,6 +2,30 @@ import pandas as pd
 from collections import defaultdict
 
 
+def process_data(data):
+    """Extract the data from csv file
+
+    Args:
+        data: (:obj: 'str'): The path to the csv where the tweets are stored
+    
+    Returns:
+        X: (:obj: 'str numpy array'): Tweets
+        y: (:obj: 'int numpy array'): Tweet classes (0,1)
+    
+    """
+
+    dataset = pd.read_csv(data,sep=';')
+    dataset = dataset.dropna()
+    X = dataset.iloc[:,1].values
+    y = dataset.iloc[:,3].values
+
+
+    return X,y
+    
+
+
+
+
 def load_table(path):
 	"""Loads the joint distribution table
 	
@@ -17,16 +41,15 @@ def load_table(path):
 	"""	
 
 	data_set = pd.read_csv(path)
-	positives = data_set.iloc[:,2].values
-	negatives = data_set.iloc[:,3].values
+	positives = data_set.iloc[:,1].values
+	negatives = data_set.iloc[:,2].values
 	words = data_set.iloc[:,0].values
-	p_tweets = data_set.iloc[0,4]
-	n_tweets = data_set.iloc[0,5]
+	p_tweets = data_set.iloc[0,3]
+	n_tweets = data_set.iloc[0,4]
 	
 	table = defaultdict(list)
 	for i in range(len(words)):
 	    table[words[i]] = [positives[i],negatives[i]]
-
 
 	return table,sum(positives),sum(negatives),p_tweets,n_tweets
 
