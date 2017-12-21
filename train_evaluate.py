@@ -35,10 +35,10 @@ def train(X_train,y_train):
                 table[word] = [0,0,0]
                 
             if y_train[i] == 1:
-                table[word][0] += 1
+                table[word][1] += 1
                 positives += 1
             else:
-                table[word][1] += 1
+                table[word][2] += 1
                 negatives += 1
             
             table[word][0] += 1
