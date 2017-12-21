@@ -23,7 +23,7 @@ def classify(tweets,table,positives,negatives,p_tweets,n_tweets):
     not_in_table = 0
 
 
-    y_pred = np.zeros(len(tweets)).astype('int64')
+    y_pred = np.zeros(len(tweets)).astype('int32')
 
     for i in range(len(tweets)):
         likelihood_pos = 0
