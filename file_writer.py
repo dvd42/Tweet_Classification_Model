@@ -49,16 +49,16 @@ def store_table(table,p_tweets,n_tweets):
 
 	with open("table/table.csv", 'a') as myfile:
 		wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-		row0 = ["Words","Positives","Negatives","Positive Tweets","Negatives Tweets"]
+		row0 = ["Words","Total","Positives","Negatives","Positive Tweets","Negatives Tweets"]
 		wr.writerow(row0)
 
 
 		i = 0
 		for key in table:
 			if i == 0:
-				row = [key,table[key][0],table[key][1],p_tweets,n_tweets]
+				row = [key,table[key][0],table[key][1],table[key][2],p_tweets,n_tweets]
 			else:
-				row = [key,table[key][0],table[key][1]]
+				row = [key,table[key][0],table[key][1],table[key][2]]
 
 			i += 1
 			wr.writerow(row)

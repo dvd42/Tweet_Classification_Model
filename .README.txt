@@ -4,6 +4,7 @@ Requirements:
 	splinter: pip install splinter
 	geckodriver: https://github.com/mozilla/geckodriver
 	lang_detect: pip install langdetect
+	ntlk library: conda install -c anaconda nltk 
 
 Usage for model validation: 
 
