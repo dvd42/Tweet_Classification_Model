@@ -29,7 +29,7 @@ To test the model you will need:
     
     
 ### Results
-The **accuracy** classifying a single tweet is around **78%**. If we are evaluating users or hashtags this is a very good accuracy since given 800 tweets only the probability of the model misclassifying 400 of them is around 2.582249878086966e-280. Here we show a couple of examples. 
+The **accuracy** classifying a single tweet is around **78%**. If we are evaluating users or hashtags this is a very good accuracy since given 800 tweets only the probability of the model misclassifying 400 of them is really low. Here we show a couple of examples. 
 
 If you analyze **#sad** you will get:  
 Sad is a negative hashtag   
